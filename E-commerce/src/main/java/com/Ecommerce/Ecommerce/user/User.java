@@ -21,7 +21,7 @@ import java.util.List;
 /// UserDetails Provides core user information.
 //Implementations are not used directly by Spring Security for security purposes.
 // They simply store user information which is later encapsulated into Authentication objects.
-// This allows non-security related user information (such as email addresses, telephone numbers etc) to be stored in a convenient location.
+// This allows non-security related user information (such as email addresses, telephone numbers ) to be stored in a convenient location.
 public class User implements UserDetails {
     @Id
     @SequenceGenerator(name="USER_SEQ", sequenceName="users_seq", allocationSize=1)
