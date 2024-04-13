@@ -1,5 +1,6 @@
-package com.Ecommerce.Ecommerce.user;
+package com.Ecommerce.Ecommerce.model;
 
+import com.Ecommerce.Ecommerce.roles.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

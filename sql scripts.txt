@@ -10,3 +10,9 @@ CREATE TABLE users (
 );
 
 ********************************************************
+CREATE TABLE category (
+    id INT PRIMARY KEY,
+    categoryName VARCHAR(50) NOT NULL,
+    parent_category_id INT,
+    FOREIGN KEY (parent_category_id) REFERENCES category(id)
+);

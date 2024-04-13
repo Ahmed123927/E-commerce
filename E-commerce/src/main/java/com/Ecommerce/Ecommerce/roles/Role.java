@@ -1,4 +1,4 @@
-package com.Ecommerce.Ecommerce.user;
+package com.Ecommerce.Ecommerce.roles;
 
 public enum Role {
     ADMIN,
