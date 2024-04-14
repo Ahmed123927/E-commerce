@@ -15,7 +15,7 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
-
+/////////////////////////////////////Category Api's//////////////////////////////////////////////////
     @PostMapping("/category/add")
 //    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> addCategory(@RequestBody Category category) {
@@ -40,4 +40,5 @@ public class AdminController {
 
         return ResponseEntity.ok(adminService.getAllCategory());
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 }
