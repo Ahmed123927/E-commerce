@@ -19,16 +19,22 @@ import java.util.stream.Collectors;
 @Service
 public class JwtService {
     private static final String SECRET_KEY="31f6de8a20e1e206a77e6f6ec319353520e8f2c8f8f428841c8707ef3b32776e";
+    private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 86400; // 24 hours
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails){
+
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        Date currentTime = new Date();
+        Date expirationTime = new Date(currentTime.getTime() + ACCESS_TOKEN_VALIDITY_SECONDS * 1000); // 24 hours from now
+
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*24))
+                .setIssuedAt(currentTime)
+                .setExpiration(expirationTime)
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
@@ -57,9 +63,11 @@ public class JwtService {
     }
 
     private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        Date expiration = extractExpiration(token);
+        Date now = new Date();
+        long allowedClockSkewMillis = 1000; // 1 second tolerance
+        return expiration.before(new Date(now.getTime() + allowedClockSkewMillis));
     }
-
     private Date extractExpiration(String token) {
         return extractClaim(token,Claims::getExpiration);
     }

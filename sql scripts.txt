@@ -16,3 +16,29 @@ CREATE TABLE category (
     parent_category_id INT,
     FOREIGN KEY (parent_category_id) REFERENCES category(id)
 );
+*******************************************************
+CREATE TABLE product (
+    id SERIAL PRIMARY KEY,
+    product_name VARCHAR(255),
+    price DECIMAL(10, 2),
+    quantity INT,
+    description TEXT,
+    rate FLOAT,
+    category_id INT,
+    FOREIGN KEY (category_id) REFERENCES category(id)
+);
+**************************************
+ALTER TABLE product
+ADD COLUMN user_id INT,
+ADD CONSTRAINT fk_user_id
+    FOREIGN KEY (user_id)
+    REFERENCES users(id);
+***************************************
+CREATE TABLE product_images (
+    id SERIAL PRIMARY KEY,
+    product_id INT,
+    image_url VARCHAR(255),
+    FOREIGN KEY (product_id) REFERENCES product(id)
+);
+*********************************************
+

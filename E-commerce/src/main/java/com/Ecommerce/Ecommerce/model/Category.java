@@ -26,11 +26,14 @@ public class Category {
 
     @ManyToOne
     @JoinColumn(name = "parent_category_id")
-    @JsonBackReference
+    @JsonBackReference(value = "parentCategory")
     private Category parentCategory;
 
-    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.REMOVE)
-
+    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference(value = "childCategories")
     private List<Category> childCategories;
 
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference(value = "products")
+    private List<Product> products;
 }
