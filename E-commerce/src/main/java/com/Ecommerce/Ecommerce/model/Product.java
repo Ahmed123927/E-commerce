@@ -1,6 +1,5 @@
 package com.Ecommerce.Ecommerce.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,12 +32,15 @@ public class Product {
     private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference
+
     private List<ProductImage> images;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
     private User user;
+//    @Transient
+//    @Getter(AccessLevel.NONE)
+//    private String owner=user.getFirstname() +" "+user.getLastname();
 
     public User getUser() {
         if (user instanceof HibernateProxy) {

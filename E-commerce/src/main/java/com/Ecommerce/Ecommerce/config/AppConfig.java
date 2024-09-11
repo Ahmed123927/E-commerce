@@ -32,6 +32,7 @@ public class AppConfig {
     }
 
     @Bean
+    ///hashing
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }

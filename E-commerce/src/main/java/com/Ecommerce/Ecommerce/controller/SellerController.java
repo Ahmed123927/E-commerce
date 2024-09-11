@@ -1,8 +1,11 @@
 package com.Ecommerce.Ecommerce.controller;
 
+import com.Ecommerce.Ecommerce.dto.ProductDTO;
+import com.Ecommerce.Ecommerce.model.Category;
 import com.Ecommerce.Ecommerce.model.Product;
 import com.Ecommerce.Ecommerce.model.User;
 import com.Ecommerce.Ecommerce.repository.UserRepository;
+import com.Ecommerce.Ecommerce.service.AdminService;
 import com.Ecommerce.Ecommerce.service.SellerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,16 +20,19 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/seller")
+@CrossOrigin(origins = "http://localhost:5173")
+
 @RequiredArgsConstructor
 
 public class SellerController {
     private final SellerService sellerService;
 
     private final UserRepository userRepository;
+    private final AdminService adminService;
 
     @PostMapping("/product/add")
     public ResponseEntity<String> addProduct(@ModelAttribute Product product,
-                                             @RequestParam("files") List<MultipartFile> files) {
+                                                     @RequestParam("files") List<MultipartFile> files) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -46,7 +52,7 @@ public class SellerController {
 
 
     @GetMapping("/product/getown")
-    public ResponseEntity<List<Product>> getOwnProducts() {
+    public ResponseEntity<List<ProductDTO>> getOwnProducts() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -80,6 +86,11 @@ public class SellerController {
     public ResponseEntity<String > updateProduct(@PathVariable int id,@RequestBody Product product){
         sellerService.updateProduct(id,product);
         return ResponseEntity.ok("Product Updated");
+    }
+    @GetMapping("/category/all")
+    public ResponseEntity<List<Category>> getAllCategories() {
+
+        return ResponseEntity.ok(adminService.getAllCategory());
     }
 
 

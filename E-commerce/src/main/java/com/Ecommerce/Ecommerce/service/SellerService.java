@@ -1,5 +1,6 @@
 package com.Ecommerce.Ecommerce.service;
 
+import com.Ecommerce.Ecommerce.dto.ProductDTO;
 import com.Ecommerce.Ecommerce.model.Product;
 import com.Ecommerce.Ecommerce.model.ProductImage;
 import com.Ecommerce.Ecommerce.model.User;
@@ -13,31 +14,31 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class SellerService {
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
+    BuyerService buyerService;
 
     public void addProduct(Product product, List<MultipartFile> images) {
-        // Save the product first
 
         productRepository.save(product);
 
-        // Create and save ProductImage entities
         for (MultipartFile image : images) {
             String fileName = generateFileName(image);
-            String uploadDirectory = "D:\\Data\\Spring Code\\E-commerce\\imgs\\";
+            String uploadDirectory = "D:\\Data\\Spring Code\\E-commerce\\FrontEnd\\E-commerce_Frontend\\public\\images\\";
             String filePath = uploadDirectory + fileName;
             try {
                 image.transferTo(new File(filePath));
-                String imageUrl = "/img/" + fileName;
+
 
                 ProductImage productImage = new ProductImage();
-                productImage.setImageUrl(imageUrl);
-                productImage.setProduct(product); // Set the product for each product image
-                productImageRepository.save(productImage); // Save the product image entity
+                productImage.setImageUrl(fileName);
+                productImage.setProduct(product);
+                productImageRepository.save(productImage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -45,11 +46,12 @@ public class SellerService {
     }
 
     private String generateFileName(MultipartFile file) {
-        return "image_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        return  file.getOriginalFilename();
     }
 
-    public List<Product> getOwnProduct(User user){
-        return productRepository.findByUserId(user.getId());
+    public List<ProductDTO> getOwnProduct(User user){
+        List<Product> products=productRepository.findByUserId(user.getId());
+        return products.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     public void deleteProduct(int id){
@@ -98,7 +100,32 @@ public class SellerService {
         product.setQuantity(updatedProduct.getQuantity());
 
 
-        // Save the updated product
+
         productRepository.save(product);
     }
+    public ProductDTO convertToDTO(Product product) {
+        ProductDTO dto = new ProductDTO();
+        dto.setId(product.getId());
+        dto.setProductName(product.getProductName());
+        dto.setPrice(product.getPrice());
+        dto.setQuantity(product.getQuantity());
+        dto.setImages(product.getImages());
+        dto.setDescription(product.getDescription());
+        dto.setRate(product.getRate());
+        dto.setCategory(product.getCategory());
+
+
+        if (product.getUser() != null) {
+            dto.setOwnerFirstName(product.getUser().getFirstname());
+            dto.setOwnerLastName(product.getUser().getLastname());
+        } else {
+
+            dto.setOwnerFirstName("Unknown");
+            dto.setOwnerLastName("Unknown");
+        }
+
+
+        return dto;
+    }
+
 }

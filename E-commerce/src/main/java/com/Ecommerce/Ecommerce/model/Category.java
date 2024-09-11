@@ -26,7 +26,6 @@ public class Category {
 
     @ManyToOne
     @JoinColumn(name = "parent_category_id")
-    @JsonBackReference(value = "parentCategory")
     private Category parentCategory;
 
     @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true)
